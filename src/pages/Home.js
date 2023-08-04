@@ -21,7 +21,7 @@ const Home = ({ items, totalItems, currentPage, itemsPerPage, onPageChange, onAd
             <li key={item.id}>
               <img src={item.image} alt={item.title} />
               <h3>{item.title}</h3>
-              <p>${item.price}</p>
+              <p>Price: ${item.price}</p>
               <p>Category: {item.category}</p>
               <button onClick={() => handleAddToCart(item)}>Add to Cart</button>
             </li>
