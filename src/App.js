@@ -5,7 +5,7 @@ import Cart from './pages/Cart';
 import SearchBar from './components/SearchBar';
 import './App.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faShoppingCart } from '@fortawesome/free-solid-svg-icons';
+import { faShoppingCart} from '@fortawesome/free-solid-svg-icons';
 import Popup from './components/Popup';
 
 const App = () => {
@@ -26,23 +26,9 @@ const App = () => {
   const [popupMessage, setPopupMessage] = useState("")
   const [showPopup, setShowPopup] = useState(false)
 
-  const handleSearch = async (searchTerm) => {
-    if (!searchTerm) {
-      // If the search input is empty, fetch all items again
-      fetchItemsOnSale();
-      setSearchedItems([]);
-      return;
-    }
-
-    try {
-      const response = await fetch(`https://fakestoreapi.com/products/category/${searchTerm}`);
-      const data = await response.json();
-      setSearchedItems(data);
-      setCurrentPage(0);
-      setItems([]); // Clear the items when searching
-    } catch (error) {
-      console.error('Error searching items:', error);
-    }
+  const handleSearch = (data) => {
+    setSearchedItems(data);
+    setCurrentPage(0);
   };
 
   const handleAddToCart = (item) => {
@@ -78,7 +64,7 @@ const App = () => {
     setCurrentPage(selectedPage);
   };
 
-
+  // to fetch all products
   useEffect(() => {
     fetchItemsOnSale();
   }, []);
@@ -93,10 +79,14 @@ const App = () => {
     }
   };
 
-  // to handle closing popup box on clicking button
-  const handleClosePopup = () => {
-    setShowPopup(false);
-  }
+  // to handle closing popup
+  useEffect( () => {
+    if (showPopup) {
+      setTimeout(() => {
+        setShowPopup(false)
+      }, 1000);
+    }
+  }, [showPopup])
 
   return (
     <Router>
@@ -106,12 +96,19 @@ const App = () => {
             <h1>E-Commerce Store</h1>
           </Link>
           <div className="search-bar">
-            <SearchBar onSearch={handleSearch} />
+            <SearchBar 
+              onSearch={handleSearch}
+              fetchItemsOnSale={fetchItemsOnSale}
+              setSearchedItems={setSearchedItems}
+              setCurrentPage={setCurrentPage}
+              setItems={setItems}
+            />
           </div>
           <Link to="/cart" className="cart-link">
             <FontAwesomeIcon icon={faShoppingCart} className="cart-icon" />
             Cart
-            {cartItems.length > 0 && <span className="cart-badge">{cartItems.length}</span>}
+            {/* updating badge no. equal to items in cart */}
+            {cartItems.length > 0 && <span className="cart-badge">{cartItems.reduce((total, item) => total + item.quantity, 0)}</span>}
           </Link>
         </header>
 
@@ -144,7 +141,7 @@ const App = () => {
             }
           />
         </Routes>
-        {showPopup && <Popup message={popupMessage} onClose={handleClosePopup}/>}
+        {showPopup && <Popup message={popupMessage} />}
       </div>
     </Router>
   );

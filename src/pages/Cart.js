@@ -6,7 +6,9 @@ const Cart = ({ cartItems, onRemoveFromCart, setCartItems, setPopupMessage, setS
     return cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
   };
 
+  // remove item whose cartId is clicked
   const handleRemoveFromCart = (cartId) => {
+    // keep only those items in cart, whose id is not clicked to remove
     setCartItems((prevCartItems) => prevCartItems.filter((item) => item.cartId !== cartId));
     setPopupMessage('Product removed from cart successfully.');
     setShowPopup(true);
@@ -14,18 +16,19 @@ const Cart = ({ cartItems, onRemoveFromCart, setCartItems, setPopupMessage, setS
 
   const handleIncrementQuantity = (cartId) => {
     setCartItems((prevCartItems) =>
+      // increase quantity 
       prevCartItems.map((item) =>
         item.cartId === cartId ? { ...item, quantity: item.quantity + 1 } : item
       )
     );
-    
   };
 
   const handleDecrementQuantity = (cartId) => {
     setCartItems((prevCartItems) =>
+      // decrease quantity
       prevCartItems.map((item) =>
         item.cartId === cartId ? { ...item, quantity: Math.max(item.quantity - 1, 0) } : item
-      )
+      ).filter(item => item.quantity > 0)  // to remove the item from the cart if its quant reaches 0
     );
   };
 
@@ -53,8 +56,16 @@ const Cart = ({ cartItems, onRemoveFromCart, setCartItems, setPopupMessage, setS
             ))}
           </ul>
           <div className="total">
-            <h3>Total: ${getTotalPrice().toFixed(2)}</h3>
-            <button onClick={() => alert('Checkout')}>Checkout</button>
+            <h3 id="cart-total-txt">Cart Total: ${getTotalPrice().toFixed(2)}</h3>
+            <button id="totalButton" onClick={() => {
+              setPopupMessage("Checkout in Progress...");
+              setShowPopup(true);
+
+              setTimeout( () => {
+                setPopupMessage("Checkout successfull!");
+                setShowPopup(true)
+              }, 1200);
+            }}>Checkout</button>
           </div>
         </>
       )}
