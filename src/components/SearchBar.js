@@ -16,21 +16,20 @@ const SearchBar = ({ onSearch, fetchItemsOnSale, setSearchedItems, setCurrentPag
 
     try {
       const response = await fetch(`https://fakestoreapi.com/products/category/${searchInput}`);
-      const data = await response.json();
+      const searchData = await response.json();
 
       // Filter items for search
-    const filteredItems = data.filter((item) => {
-      // Convert searchInput and item.category to lowercase for case-insensitive comparison
-      const searchTerms = searchInput.toLowerCase().split(' ');
-      return searchTerms.some((term) =>
-        item.title.toLowerCase().includes(term) ||
-        item.category.toLowerCase().includes(term)
-      );
-    });
+      const filteredSearch = searchData.filter((data) => {
+        // Convert searchInput and item.category to lowercase for case-insensitive comparison
+        const searchTerms = searchInput.toLowerCase().split(' ');
+        const category = data.category.toLowerCase();
+        return searchTerms.some(item => category.split(' ').includes(item));
+      });
 
-      setSearchedItems(filteredItems);
+      setSearchedItems(filteredSearch);
       setCurrentPage(0);
       setItems([]); // Clear the items when searching
+      setSearchInput('');
     } catch (error) {
       console.error('Error searching items:', error);
     }
@@ -42,14 +41,13 @@ const SearchBar = ({ onSearch, fetchItemsOnSale, setSearchedItems, setCurrentPag
 
   return (
     <div>
-      <FontAwesomeIcon icon={faSearch} className="search-icon" />
       <input
         type="text"
         value={searchInput}
         onChange={handleSearchChange}
         placeholder="Search by category"
       />
-      <button onClick={handleSearch}>Search</button>
+      <button onClick={handleSearch}> <FontAwesomeIcon icon={faSearch} className="search-icon" /> Search</button>
     </div>
   );
 };

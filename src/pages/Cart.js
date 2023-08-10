@@ -46,12 +46,12 @@ const Cart = ({ cartItems, onRemoveFromCart, setCartItems, setPopupMessage, setS
                 <h3>{item.title}</h3>
                 <p>Price: ${item.price}</p>
                 <div className="quantity-control">
-                  <button onClick={() => handleDecrementQuantity(item.cartId)}>-</button>
+                  <button id="cart-quant-dec" onClick={() => handleDecrementQuantity(item.cartId)}>-</button>
                   <span>{item.quantity}</span>
-                  <button onClick={() => handleIncrementQuantity(item.cartId)}>+</button>
+                  <button id="cart-quant-inc" onClick={() => handleIncrementQuantity(item.cartId)}>+</button>
                 </div>
                 <p>Total: ${(item.price * item.quantity).toFixed(2)}</p>
-                <button onClick={() => handleRemoveFromCart(item.cartId)}>Remove</button>
+                <button id="cart-remove-button" onClick={() => handleRemoveFromCart(item.cartId)}>Remove</button>
               </li>
             ))}
           </ul>
